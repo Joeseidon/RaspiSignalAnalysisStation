@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Data Logger
+Comment=Data Logger Application for the DAQC2plate
+Categories=Application;Development
+Path=/home/pi/Applications
+Icon=/home/pi/Applications/Assets/LoggerButton.png
+Exec=python ppLOGGER2.py
+Type=Application
+Encoding=UTF-8
+Terminal=false

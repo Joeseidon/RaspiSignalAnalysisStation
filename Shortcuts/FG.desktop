@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Function Generator
+Comment=Function Generator Application for the DAQC2plate
+Categories=Application;Development
+Path=/home/pi/Applications
+Icon=/home/pi/Applications/Assets/FGbutton.png
+Exec=python3 FunctionGenerator.py
+Type=Application
+Encoding=UTF-8
+Terminal=false

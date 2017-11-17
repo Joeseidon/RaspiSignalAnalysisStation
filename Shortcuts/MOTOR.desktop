@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Stepper Motor Controller
+Comment=Stepper Motor Controller for the DAQC2plate
+Categories=Application;Development
+Path=/home/pi/Applications
+Icon=/home/pi/Applications/Assets/StepperButton.png
+Exec=python3 QTmotor.py
+Type=Application
+Encoding=UTF-8
+Terminal=false

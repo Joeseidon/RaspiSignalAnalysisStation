@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FunctionGenerator</class>
+ <widget class="QWidget" name="FunctionGenerator">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>337</width>
+    <height>680</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Pi-Plates Function Generator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Assets/Icon32X32.png</normaloff>Assets/Icon32X32.png</iconset>
+  </property>
+  <widget class="QDial" name="Frequency1">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>150</width>
+     <height>128</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QDial" name="Frequency2">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>80</y>
+     <width>150</width>
+     <height>128</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>2000</number>
+   </property>
+   <property name="singleStep">
+    <number>1</number>
+   </property>
+   <property name="value">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radioButtonX10Ch1">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>230</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>X10</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">MultiplierButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="radioButtonX100Ch1">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>250</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>X100</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">MultiplierButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="radioButtonX100Ch2">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>250</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>X100</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">MultiplierButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="radioButtonX10Ch2">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>230</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>X10</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">MultiplierButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QLCDNumber" name="Ch1Display">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>111</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Roboto</family>
+     <pointsize>12</pointsize>
+     <weight>9</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 12pt &quot;Roboto&quot;;</string>
+   </property>
+   <property name="smallDecimalPoint">
+    <bool>false</bool>
+   </property>
+   <property name="intValue" stdset="0">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QLCDNumber" name="Ch2Display">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>30</y>
+     <width>111</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Roboto</family>
+     <pointsize>12</pointsize>
+     <weight>9</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 12pt &quot;Roboto&quot;;</string>
+   </property>
+   <property name="value" stdset="0">
+    <double>1000.000000000000000</double>
+   </property>
+   <property name="intValue" stdset="0">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>200</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Frequency Adjustment</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>280</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Range Multiplier</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>450</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Wave Shape</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonSquare1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>350</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Square</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonRSaw1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>370</y>
+     <width>131</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sawtooth</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonFSaw1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>390</y>
+     <width>151</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>INV Sawtooth</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonNoise1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>410</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Noise</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonSine2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>310</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sine</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonTriangle2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>330</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Triangle</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonFSaw2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>390</y>
+     <width>151</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>INV Sawtooth</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonNoise2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>410</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Noise</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonRSaw2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>370</y>
+     <width>131</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sawtooth</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonSquare2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>350</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Square</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>220</y>
+     <width>331</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>-10</x>
+     <y>300</y>
+     <width>341</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_3">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>470</y>
+     <width>331</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>10</y>
+     <width>101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Channel 1</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>10</y>
+     <width>101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Channel 2</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonSine1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>310</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sine</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonTriangle1">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>330</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Triangle</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>560</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Output Level</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy1_1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>480</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 1</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy2_1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>500</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 2</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy4_1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>520</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 4</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy8_1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>540</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 8</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy1_2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>480</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 1</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy4_2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>520</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 4</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy2_2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>500</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 2</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="sigDivBy8_2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>540</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>/ 8</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ScaleButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="Line" name="line_4">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>580</y>
+     <width>331</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>640</y>
+     <width>331</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Copyright 2017, WallyWare, inc. 
+Distributed under GNU General Public License (GPL) version 3 </string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonSinc1">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>430</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sinc</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup1</string>
+   </attribute>
+  </widget>
+  <widget class="QRadioButton" name="WaveButtonSinc2">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>430</y>
+     <width>118</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sinc</string>
+   </property>
+   <attribute name="buttonGroup">
+    <string notr="true">ShapeButtonGroup2</string>
+   </attribute>
+  </widget>
+  <widget class="QPushButton" name="HelpButton">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>600</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_5">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>630</y>
+     <width>341</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ADDRlabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>600</y>
+     <width>131</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Running on Address </string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="ShapeButtonGroup1"/>
+  <buttongroup name="ShapeButtonGroup2"/>
+  <buttongroup name="MultiplierButtonGroup1"/>
+  <buttongroup name="ScaleButtonGroup1"/>
+  <buttongroup name="MultiplierButtonGroup2"/>
+  <buttongroup name="ScaleButtonGroup2"/>
+ </buttongroups>
+</ui>
