@@ -49,8 +49,8 @@ class MyWindow(QtGui.QMainWindow):
 		self.move(qr.topLeft())
 		
 		#Create Vars to hold output values
-		self.freq = 6 #hz 
-		self.freqStep = 1
+		self.freq = 100 #hz 
+		self.freqStep = 100
 		self.gain = 0.8003
 		self.offset = 0
 		self.op_code = 1 #idle
@@ -126,7 +126,7 @@ class MyWindow(QtGui.QMainWindow):
 		
 	def resetGenData(self):
 		#reset 3 phase generator settings
-		self.FreqDial.setValue(6)
+		self.FreqDial.setValue(100)
 		self.FreqLCD.display((self.freq/2)-0.5)
 		self.OffsetInput.setValue(0.0)
 		self.GainInput.setValue(0.8)
