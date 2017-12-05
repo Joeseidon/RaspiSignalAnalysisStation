@@ -49,7 +49,7 @@ class MyWindow(QtGui.QMainWindow):
 		self.move(qr.topLeft())
 		
 		#Create Vars to hold output values
-		self.freq = 3 #hz 
+		self.freq = 6 #hz 
 		self.freqStep = 1
 		self.gain = 0.8003
 		self.offset = 0
@@ -111,7 +111,7 @@ class MyWindow(QtGui.QMainWindow):
 		self.freq = self.FreqDial.sliderPosition() + self.freqStep
 		self.FreqDial.setValue(self.freq)
 		#update LCD display to this value
-		self.FreqLCD.display(self.freq)
+		self.FreqLCD.display((self.freq/2)-0.5)
 		#set global update value so that on timer experation new data is sent
 		self.dataHasChanged = True
 		
@@ -120,14 +120,14 @@ class MyWindow(QtGui.QMainWindow):
 		self.freq = self.FreqDial.sliderPosition() - self.freqStep
 		self.FreqDial.setValue(self.freq)
 		#update LCD display to this value
-		self.FreqLCD.display(self.freq)
+		self.FreqLCD.display((self.freq/2)-0.5)
 		#set global update value so that on timer experation new data is sent
 		self.dataHasChanged = True
 		
 	def resetGenData(self):
 		#reset 3 phase generator settings
-		self.FreqDial.setValue(3)
-		self.FreqLCD.display(self.freq)
+		self.FreqDial.setValue(6)
+		self.FreqLCD.display((self.freq/2)-0.5)
 		self.OffsetInput.setValue(0.0)
 		self.GainInput.setValue(0.8)
 		self.Startbtn.setEnabled(True)
@@ -183,7 +183,7 @@ class MyWindow(QtGui.QMainWindow):
 		#grab current dial value 
 		self.freq = self.FreqDial.sliderPosition()
 		#update LCD display to this value
-		self.FreqLCD.display(self.freq)
+		self.FreqLCD.display((self.freq/2)-0.5)
 		#set global update value so that on timer experation new data is sent
 		self.dataHasChanged = True
 		
