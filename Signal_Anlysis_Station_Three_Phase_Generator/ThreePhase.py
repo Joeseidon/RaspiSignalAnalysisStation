@@ -36,7 +36,6 @@ from PyQt4 import QtGui, QtCore, uic
 import smbus
 import struct
 
-
 class MyWindow(QtGui.QMainWindow):
 	def __init__(self):
 		#Create Window
@@ -70,7 +69,6 @@ class MyWindow(QtGui.QMainWindow):
 			#connect frequency input
 		self.Increase_Freq_Btn.clicked.connect(self.increaseFreq)
 		self.Decrease_Freq_Btn.clicked.connect(self.decreaseFreq)
-		'''self.connect(self.FreqDial, QtCore.SIGNAL('valueChanged(int)'), self.updateFreq)'''
 			#connect gain input
 		self.OffsetInput.valueChanged.connect(self.updateOffset)
 			#connect offset input
@@ -112,34 +110,27 @@ class MyWindow(QtGui.QMainWindow):
 		self.timer.setInterval(self.update_freq)
 		self.timer.timeout.connect(self.timerExperation)
 		self.timer.start()
+		
 	def setFreqStep(self, mult):
 		self.freqStep = mult
 		
 	def increaseFreq(self):
-		#grab current dial value 
-		#self.freq = self.FreqDial.sliderPosition() + self.freqStep
-		#self.FreqDial.setValue(self.freq)
 		self.freq = self.freq + self.freqStep
 		if(self.freq<0):
 			self.freq=0
 		if(self.freq>20001):
 			self.freq=20001
-		'''self.FreqDial.setValue(self.freq)'''
 		#update LCD display to this value
 		self.FreqLCD.display(int((self.freq/2)-0.5))
 		#set global update value so that on timer experation new data is sent
 		self.dataHasChanged = True
 		
 	def decreaseFreq(self):
-		#grab current dial value 
-		#self.freq = self.FreqDial.sliderPosition() - self.freqStep
-		#self.FreqDial.setValue(self.freq)
 		self.freq = self.freq - self.freqStep
 		if(self.freq<0):
 			self.freq=0
 		if(self.freq>20001):
 			self.freq=20001
-		'''self.FreqDial.setValue(self.freq)'''
 		#update LCD display to this value
 		self.FreqLCD.display(int((self.freq/2)-0.5))
 		#set global update value so that on timer experation new data is sent
@@ -147,7 +138,6 @@ class MyWindow(QtGui.QMainWindow):
 		
 	def resetGenData(self):
 		#reset 3 phase generator settings
-		'''self.FreqDial.setValue(100)'''
 		self.freq=2001
 		self.FreqLCD.display(int((self.freq/2)-0.5))
 		self.OffsetInput.setValue(0.0)
@@ -277,7 +267,7 @@ class MyWindow(QtGui.QMainWindow):
 				ThreePhaseSign = ThreePhaseSign | 0x20
 			if(self.channel_3_gain_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x40
-			#print("Sign Word: ",bin(ThreePhaseSign))
+
 			return ThreePhaseSign
 	
 	def createMsg(self,
@@ -330,7 +320,6 @@ class MyWindow(QtGui.QMainWindow):
 			
 		#Add Gain and Buffer
 		MSB,LSB = self.dataConversionForTransfer(int(gain*100)) #multiplied by 100 to avoid decimals
-		#msg.append(MSB) nothing should be in this bit gain is 0-1 (0-10 after *10)
 		msg.append(LSB)	
 		if debug:
 			print(msg)
@@ -339,14 +328,12 @@ class MyWindow(QtGui.QMainWindow):
 		ThreePhaseSignData = self.generateSignData()
 		msg.append(ThreePhaseSignData)
 		MSB,LSB = self.dataConversionForTransfer(int(offset*100)) #multiplied by 100 to avoid decimals
-		#msg.append(MSB) #nothing should be in this value offset is -1 <-> 1
 		msg.append(LSB)	
 		if debug:
 			print(msg)
 			
 		#Add Op_code and Buffer
 		MSB,LSB = self.dataConversionForTransfer(op_code)
-		#msg.append(MSB) Nothing in this bit
 		msg.append(LSB)	
 		if debug:
 			print(msg)
