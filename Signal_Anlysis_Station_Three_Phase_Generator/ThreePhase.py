@@ -49,17 +49,17 @@ class MyWindow(QtGui.QMainWindow):
 		self.move(qr.topLeft())
 		
 		#Create Vars to hold output values
-		self.freq = 2000 #(1000hz) 
-		self.freqStep = 100
+		self.freq = 2001 #(1000hz) 
+		self.freqStep = 20 #1hz
 		self.gain = 0.8003
 		self.offset = 0
 		self.op_code = 1 #idle
-		self.channel_1_shift_value = 0
-		self.channel_2_shift_value = 0
-		self.channel_3_shift_value = 0
-		self.channel_1_mult_value = 0.0
-		self.channel_2_mult_value = 0.0
-		self.channel_3_mult_value = 0.0
+		self.channel_1_offset_value = 0
+		self.channel_2_offset_value = 0
+		self.channel_3_offset_value = 0
+		self.channel_1_gain_value = 0.0
+		self.channel_2_gain_value = 0.0
+		self.channel_3_gain_value = 0.0
 		
 		#Create necessary local vars
 		self.update_freq = 1000 #time in msec for timer experation
@@ -70,7 +70,7 @@ class MyWindow(QtGui.QMainWindow):
 			#connect frequency input
 		self.Increase_Freq_Btn.clicked.connect(self.increaseFreq)
 		self.Decrease_Freq_Btn.clicked.connect(self.decreaseFreq)
-		self.connect(self.FreqDial, QtCore.SIGNAL('valueChanged(int)'), self.updateFreq)
+		'''self.connect(self.FreqDial, QtCore.SIGNAL('valueChanged(int)'), self.updateFreq)'''
 			#connect gain input
 		self.OffsetInput.valueChanged.connect(self.updateOffset)
 			#connect offset input
@@ -81,15 +81,22 @@ class MyWindow(QtGui.QMainWindow):
 		self.Stopbtn.clicked.connect(self.stopBtnPress)
 		self.Stopbtn.setEnabled(False)
 			#connect channel offset 
-		self.Channel1_offset.valueChanged.connect(self.channelShiftUpdate)
-		self.Channel2_offset.valueChanged.connect(self.channelShiftUpdate)
-		self.Channel3_offset.valueChanged.connect(self.channelShiftUpdate)
+		self.Channel1_offset.valueChanged.connect(self.channelOffsetUpdate)
+		self.Channel2_offset.valueChanged.connect(self.channelOffsetUpdate)
+		self.Channel3_offset.valueChanged.connect(self.channelOffsetUpdate)
 			#connect channel multipliers
-		self.Channel1_mult.valueChanged.connect(self.channelMultiplierUpdate)
-		self.Channel2_mult.valueChanged.connect(self.channelMultiplierUpdate)
-		self.Channel3_mult.valueChanged.connect(self.channelMultiplierUpdate)
+		self.Channel1_gain.valueChanged.connect(self.channelGainUpdate)
+		self.Channel2_gain.valueChanged.connect(self.channelGainUpdate)
+		self.Channel3_gain.valueChanged.connect(self.channelGainUpdate)
 			#connect reset button
 		self.ResetBtn.clicked.connect(self.resetGenData)
+			#Update LCD to default Freq
+		self.FreqLCD.display(int((self.freq/2)-0.5))
+			#Connect Multipliers
+		self.FreqMult5.toggled.connect(lambda:self.setFreqStep(10))
+		self.FreqMult10.toggled.connect(lambda:self.setFreqStep(20))
+		self.FreqMult100.toggled.connect(lambda:self.setFreqStep(200))
+		self.FreqMult1000.toggled.connect(lambda:self.setFreqStep(2000))
 		
 		#Create I2C comm
 		self.DEVICE_BUS = 1
@@ -105,29 +112,44 @@ class MyWindow(QtGui.QMainWindow):
 		self.timer.setInterval(self.update_freq)
 		self.timer.timeout.connect(self.timerExperation)
 		self.timer.start()
-	
+	def setFreqStep(self, mult):
+		self.freqStep = mult
+		
 	def increaseFreq(self):
 		#grab current dial value 
-		self.freq = self.FreqDial.sliderPosition() + self.freqStep
-		self.FreqDial.setValue(self.freq)
+		#self.freq = self.FreqDial.sliderPosition() + self.freqStep
+		#self.FreqDial.setValue(self.freq)
+		self.freq = self.freq + self.freqStep
+		if(self.freq<0):
+			self.freq=0
+		if(self.freq>20001):
+			self.freq=20001
+		'''self.FreqDial.setValue(self.freq)'''
 		#update LCD display to this value
-		self.FreqLCD.display((self.freq/2)-0.5)
+		self.FreqLCD.display(int((self.freq/2)-0.5))
 		#set global update value so that on timer experation new data is sent
 		self.dataHasChanged = True
 		
 	def decreaseFreq(self):
 		#grab current dial value 
-		self.freq = self.FreqDial.sliderPosition() - self.freqStep
-		self.FreqDial.setValue(self.freq)
+		#self.freq = self.FreqDial.sliderPosition() - self.freqStep
+		#self.FreqDial.setValue(self.freq)
+		self.freq = self.freq - self.freqStep
+		if(self.freq<0):
+			self.freq=0
+		if(self.freq>20001):
+			self.freq=20001
+		'''self.FreqDial.setValue(self.freq)'''
 		#update LCD display to this value
-		self.FreqLCD.display((self.freq/2)-0.5)
+		self.FreqLCD.display(int((self.freq/2)-0.5))
 		#set global update value so that on timer experation new data is sent
 		self.dataHasChanged = True
 		
 	def resetGenData(self):
 		#reset 3 phase generator settings
-		self.FreqDial.setValue(100)
-		self.FreqLCD.display((self.freq/2)-0.5)
+		'''self.FreqDial.setValue(100)'''
+		self.freq=2001
+		self.FreqLCD.display(int((self.freq/2)-0.5))
 		self.OffsetInput.setValue(0.0)
 		self.GainInput.setValue(0.8)
 		self.Startbtn.setEnabled(True)
@@ -135,26 +157,26 @@ class MyWindow(QtGui.QMainWindow):
 		self.Channel1_offset.setValue(0)
 		self.Channel2_offset.setValue(0)
 		self.Channel3_offset.setValue(0)
-		self.Channel1_mult.setValue(0.0)
-		self.Channel2_mult.setValue(0.0)
-		self.Channel3_mult.setValue(0.0)
+		self.Channel1_gain.setValue(0.0)
+		self.Channel2_gain.setValue(0.0)
+		self.Channel3_gain.setValue(0.0)
 		self.op_code = 3
 		#set global update value
 		self.dataHasChanged = True
 		
-	def channelShiftUpdate(self):
-		#update all channel shift values
-		self.channel_1_shift_value = self.Channel1_offset.value()
-		self.channel_2_shift_value = self.Channel2_offset.value()
-		self.channel_3_shift_value = self.Channel3_offset.value()
+	def channelOffsetUpdate(self):
+		#update all channel offset values
+		self.channel_1_offset_value = self.Channel1_offset.value()
+		self.channel_2_offset_value = self.Channel2_offset.value()
+		self.channel_3_offset_value = self.Channel3_offset.value()
 		#set global update value
 		self.dataHasChanged = True
 	
-	def channelMultiplierUpdate(self):
-		#update all channel shift values
-		self.channel_1_mult_value = self.Channel1_mult.value()
-		self.channel_2_mult_value = self.Channel2_mult.value()
-		self.channel_3_mult_value = self.Channel3_mult.value()
+	def channelGainUpdate(self):
+		#update all channel gain values
+		self.channel_1_gain_value = self.Channel1_gain.value()
+		self.channel_2_gain_value = self.Channel2_gain.value()
+		self.channel_3_gain_value = self.Channel3_gain.value()
 		#set global update value
 		self.dataHasChanged = True
 		
@@ -178,15 +200,7 @@ class MyWindow(QtGui.QMainWindow):
 		#disable stopBtn and enable startBtn
 		self.Startbtn.setEnabled(True)
 		self.Stopbtn.setEnabled(False)
-		
-	def updateFreq(self):
-		#grab current dial value 
-		self.freq = self.FreqDial.sliderPosition()
-		#update LCD display to this value
-		self.FreqLCD.display((self.freq/2)-0.5)
-		#set global update value so that on timer experation new data is sent
-		self.dataHasChanged = True
-		
+	
 	def updateOffset(self):
 		#grab current spin box value
 		self.offset=self.OffsetInput.value()		
@@ -232,20 +246,7 @@ class MyWindow(QtGui.QMainWindow):
 		topBits = int(r[:-2], 16)
 		lowerBits = int("0x"+r[4:], 16)
 		return topBits, lowerBits
-		
-	def channelShiftToCode(self, channel_val):
-		'''Channel Shift Codes to Pass Negatives
-			Shift Value 	|		Transmit Code
-				-1						0
-				 0						1
-				 1						2
-		'''
-		if(channel_val==-1):
-			return 0
-		elif(channel_val==0):
-			return 1
-		elif(channel_val==1):
-			return 2
+
 			
 	def generateSignData(self):
 			#Establish ThreePhaseSign (8-bit word used to pass data sign information)
@@ -264,17 +265,17 @@ class MyWindow(QtGui.QMainWindow):
 			
 			if(self.offset < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x01
-			if(self.channel_1_shift_value < 0):
+			if(self.channel_1_offset_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x02
-			if(self.channel_2_shift_value < 0):
+			if(self.channel_2_offset_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x04
-			if(self.channel_3_shift_value < 0):
+			if(self.channel_3_offset_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x08
-			if(self.channel_1_mult_value < 0):
+			if(self.channel_1_gain_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x10
-			if(self.channel_2_mult_value < 0):
+			if(self.channel_2_gain_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x20
-			if(self.channel_3_mult_value < 0):
+			if(self.channel_3_gain_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x40
 			#print("Sign Word: ",bin(ThreePhaseSign))
 			return ThreePhaseSign
@@ -351,29 +352,22 @@ class MyWindow(QtGui.QMainWindow):
 			print(msg)
 		
 		#Add channel 1-3 Offset
-		MSB,LSB = self.dataConversionForTransfer(int(self.channel_1_shift_value * 100))
+		MSB,LSB = self.dataConversionForTransfer(int(self.channel_1_offset_value * 100))
 		msg.append(LSB)
-		MSB,LSB = self.dataConversionForTransfer(int(self.channel_2_shift_value * 100))
+		MSB,LSB = self.dataConversionForTransfer(int(self.channel_2_offset_value * 100))
 		msg.append(LSB)
-		MSB,LSB = self.dataConversionForTransfer(int(self.channel_3_shift_value * 100))
+		MSB,LSB = self.dataConversionForTransfer(int(self.channel_3_offset_value * 100))
 		msg.append(LSB)
-		'''
-		msg.append(int(self.channel_1_shift_value * 100))
-		msg.append(int(self.channel_2_shift_value * 100))
-		msg.append(int(self.channel_3_shift_value * 100))'''
 		if debug:
 			print(msg)
 			
 		#Add channel 1-3 Multipliers and Buffer
-		MSB,LSB = self.dataConversionForTransfer(int(self.channel_1_mult_value * 100))
+		MSB,LSB = self.dataConversionForTransfer(int(self.channel_1_gain_value * 100))
 		msg.append(LSB)
-		MSB,LSB = self.dataConversionForTransfer(int(self.channel_2_mult_value * 100))
+		MSB,LSB = self.dataConversionForTransfer(int(self.channel_2_gain_value * 100))
 		msg.append(LSB)
-		MSB,LSB = self.dataConversionForTransfer(int(self.channel_3_mult_value * 100))
+		MSB,LSB = self.dataConversionForTransfer(int(self.channel_3_gain_value * 100))
 		msg.append(LSB)
-		'''msg.append(int(self.channel_1_mult_value * 100))
-		msg.append(int(self.channel_2_mult_value * 100))
-		msg.append(int(self.channel_3_mult_value * 100))'''
 		msg.append(bufferVal)
 		if debug:
 			print(msg)
