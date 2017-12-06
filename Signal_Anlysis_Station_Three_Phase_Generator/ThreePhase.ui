@@ -219,7 +219,7 @@
           <item row="0" column="0">
            <widget class="QDial" name="FreqDial">
             <property name="maximum">
-             <number>10000</number>
+             <number>20000</number>
             </property>
             <property name="singleStep">
              <number>100</number>
@@ -228,7 +228,7 @@
              <number>100</number>
             </property>
             <property name="value">
-             <number>100</number>
+             <number>2000</number>
             </property>
             <property name="tracking">
              <bool>true</bool>

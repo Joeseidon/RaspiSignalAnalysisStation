@@ -49,7 +49,7 @@ class MyWindow(QtGui.QMainWindow):
 		self.move(qr.topLeft())
 		
 		#Create Vars to hold output values
-		self.freq = 100 #hz 
+		self.freq = 2000 #(1000hz) 
 		self.freqStep = 100
 		self.gain = 0.8003
 		self.offset = 0
@@ -276,11 +276,11 @@ class MyWindow(QtGui.QMainWindow):
 				ThreePhaseSign = ThreePhaseSign | 0x20
 			if(self.channel_3_mult_value < 0):
 				ThreePhaseSign = ThreePhaseSign | 0x40
-			print("Sign Word: ",bin(ThreePhaseSign))
+			#print("Sign Word: ",bin(ThreePhaseSign))
 			return ThreePhaseSign
 	
 	def createMsg(self,
-					freq			= 3, 
+					freq			= 2000, 
 					gain			= 0.8003, 
 					offset			= 0, 
 					op_code			= 3,
