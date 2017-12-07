@@ -63,7 +63,7 @@ class MyWindow(QtGui.QMainWindow):
 		self.channel_3_gain_value = 0.0
 		
 		#Create necessary local vars
-		self.update_freq = 1000 #time in msec for timer experation
+		self.update_freq =500 #time in msec for timer experation
 		self.msg_data = []
 		self.dataHasChanged = False
 				
@@ -211,7 +211,7 @@ class MyWindow(QtGui.QMainWindow):
 		#four local parameters (freq, gain, offset, op_code)
 		#a new message will be sent to the launchpad via the I2C 
 		#interface to make these updates.
-		if(self.dataHasChanged):
+		if(self.dataHasChanged or True):
 			#reset flag
 			self.dataHasChanged = False
 			
