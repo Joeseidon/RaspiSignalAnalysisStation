@@ -214,7 +214,7 @@ class MyWindow(QtGui.QMainWindow):
 	def phaseCorrect(self):
 		#Called from timerExperation after every data update 
 		#Will resend data to correct phase after 0.5sec
-		print("Phase reset")
+
 		#send new settings to the launchpad
 		self.writeSettingsToGenerator()
 		
