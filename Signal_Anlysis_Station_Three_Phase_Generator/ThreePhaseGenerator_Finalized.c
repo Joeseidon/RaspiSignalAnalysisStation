@@ -1,6 +1,6 @@
 //#############################################################################
 //
-// FILE:   ThreePhaseGenerator_Finalized.c
+// FILE:   SignalAnalysisStation_ThreePhaseGen.c
 //
 // TITLE:  Three Phase Power Generator
 //
@@ -114,7 +114,9 @@ volatile struct DAC_REGS* DAC_PTR[4] = {0x0,&DacaRegs,&DacbRegs,&DaccRegs}; //DA
 //
 //Waveform settings
 //
-Uint32 samplingFreq_hz  = 950000;    //default to 200000 max? = 950000
+Uint32 samplingFreq_hz  = 790000;    //default to 200000 
+                                     //Max when running from RAM = 950000
+                                     //Max when running from FLASH = 790000
 
 /*Output frequency default. This value will change up start up of the
   ThreePhase GUI
@@ -129,13 +131,13 @@ Uint32 maxOutputFreq_hz = 20000;    //default to 5000 (try setting to 10000)
 float waveformGain      = 0.8003; // Range 0.0 -> 1.0
 float waveformOffset    = 0.0;      // Range -1.0 -> 1.0
 
-//
+/*//
 //Channel Phase
 //
 const unsigned long int phase1_shift = 0;
 const unsigned long int phase2_shift = 21845;	//120 degrees off
 const unsigned long int phase3_shift = 43690;	//240 degrees off
-
+*/
 //Define Signal Generator
 #if PHASE_GEN_TYPE==LINEAR_INT
 SGENTI_1 sgen_1 = SGENTI_1_DEFAULTS;
@@ -183,7 +185,7 @@ __interrupt void i2cFIFOISR(void);
 
 inline float balanceGain(float generalGain, float channelGain);
 inline float balanceOffset(float generalOffset, float channelOffset);
-
+inline void resetPhase(void);
 //
 // Main
 //
@@ -417,18 +419,24 @@ void configureDAC(void)
 	
 	EDIS;
 }
-
+inline void resetPhase(void)
+{
+    /*
+    phase = ((desired phase(radians) / 2pi) * 2^16)
+    */
+	sgen_1.alpha = 0; // Range(16) = 0x0000 -> 0xFFFF
+	sgen_2.alpha = 21845;	//120 degrees off
+	sgen_3.alpha = 43690;	//240 degrees off
+}
 //
 // configureWaveform - Configure the SINE waveform
 //
 void configureWaveform(void)
 {
-    /*
-    phase = ((desired phase(radians) / 2pi) * 2^16)
-    */
-	sgen_1.alpha = phase1_shift; // Range(16) = 0x0000 -> 0xFFFF
-	sgen_2.alpha = phase2_shift;
-	sgen_3.alpha = phase3_shift;
+    //
+    //In this case we are initilizing with a phase but this function is reused to reset the phase angles
+    //
+    resetPhase();
 	
     setFreq();
     setGain();
@@ -445,9 +453,11 @@ interrupt void cpu_timer0_isr(void)
 	//
 	// Write current sine value to buffered DACs
 	//
+	EALLOW;
 	DAC_PTR[DACA]->DACVALS.all = sgen_1_out;
 	DAC_PTR[DACB]->DACVALS.all = sgen_2_out;
 	DAC_PTR[DACC]->DACVALS.all = sgen_3_out;
+	EDIS;
 	
 	//
     // Scale next sine value
@@ -526,10 +536,16 @@ void initI2CFIFO()
             rData[i] = I2C_getData(I2CA_BASE);
         }
         decodeMsg();
+        
         //
         // Clear interrupt flag
         //
         I2C_clearInterruptStatus(I2CA_BASE, I2C_INT_RXFF);
+        
+        //
+        //Reset Phase After Every Modification to the Waveforms
+        //
+        resetPhase();
     }
     //
     // Issue ACK
