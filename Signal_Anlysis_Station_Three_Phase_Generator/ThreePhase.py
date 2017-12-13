@@ -117,6 +117,10 @@ class MyWindow(QtGui.QMainWindow):
 		self.Channel1_phase.valueChanged.connect(self.channelPhaseUpdate)
 		self.Channel2_phase.valueChanged.connect(self.channelPhaseUpdate)
 		self.Channel3_phase.valueChanged.connect(self.channelPhaseUpdate)
+			#This values can only be changed while the system is running. Disable until start
+		self.Channel1_phase.setEnabled(False)
+		self.Channel2_phase.setEnabled(False)
+		self.Channel3_phase.setEnabled(False)
 		
 		#Create I2C comm
 		self.DEVICE_BUS = 1
@@ -149,7 +153,10 @@ class MyWindow(QtGui.QMainWindow):
 			5		:	Channel	3 UP
 			6		:	Channel 3 DOWN
 			7		:		buf			'''
-		
+		#Disable until after data sent. Prevents GUI and DPS from getting out of synch
+		self.Channel1_phase.setEnabled(False)
+		self.Channel2_phase.setEnabled(False)
+		self.Channel3_phase.setEnabled(False)
 		#print("Old Data: ", self.channel_1_phase_value, " ", self.channel_2_phase_value, " ", self.channel_3_phase_value)
 		#print("New Data: ", self.Channel1_phase.value(), " ",self.Channel2_phase.value(), " ", self.Channel3_phase.value())
 		#reset phase data
@@ -254,6 +261,10 @@ class MyWindow(QtGui.QMainWindow):
 		#disable startBtn and enable stopBtn
 		self.Stopbtn.setEnabled(True)
 		self.Startbtn.setEnabled(False)
+		#Enable Phase Adjustment
+		self.Channel1_phase.setEnabled(True)
+		self.Channel2_phase.setEnabled(True)
+		self.Channel3_phase.setEnabled(True)
 		
 	def stopBtnPress(self):
 		#update op_code
@@ -263,6 +274,10 @@ class MyWindow(QtGui.QMainWindow):
 		#disable stopBtn and enable startBtn
 		self.Startbtn.setEnabled(True)
 		self.Stopbtn.setEnabled(False)
+		#Disable Phase Adjustment
+		self.Channel1_phase.setEnabled(False)
+		self.Channel2_phase.setEnabled(False)
+		self.Channel3_phase.setEnabled(False)
 	
 	def updateOffset(self):
 		#grab current spin box value
@@ -284,6 +299,12 @@ class MyWindow(QtGui.QMainWindow):
 
 		#send new settings to the launchpad
 		self.writeSettingsToGenerator()
+		
+		#Reenable phase adjustment
+		if(self.op_code == 2):
+			self.Channel1_phase.setEnabled(True)
+			self.Channel2_phase.setEnabled(True)
+			self.Channel3_phase.setEnabled(True)
 		
 		
 	def timerExperation(self):
@@ -405,7 +426,6 @@ class MyWindow(QtGui.QMainWindow):
 		
 		#Add Phase Data
 		msg.append(self.phaseData)
-		print(hex(self.phaseData))
 		if debug:
 			print(msg)
 			
