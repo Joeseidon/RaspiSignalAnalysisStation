@@ -88,6 +88,11 @@ be connected to 3v3.
 #define NORMAL_GEN			  0
 #define PHASE_GEN_TYPE	      LINEAR_INT
 
+/*
+ * increment = ( (10*(PI/180)) / (2PI) ) * 2^16
+ * */
+#define TEN_DEGREE_INCREMENT	1820
+
 //
 // I2C Defines
 //
@@ -131,13 +136,19 @@ Uint32 maxOutputFreq_hz = 20000;    //default to 5000 (try setting to 10000)
 float waveformGain      = 0.8003; // Range 0.0 -> 1.0
 float waveformOffset    = 0.0;      // Range -1.0 -> 1.0
 
-/*//
+//
 //Channel Phase
 //
-const unsigned long int phase1_shift = 0;
-const unsigned long int phase2_shift = 21845;	//120 degrees off
-const unsigned long int phase3_shift = 43690;	//240 degrees off
-*/
+/*
+ * NOTE: phase = ((desired phase(radians) / 2pi) * 2^16)
+ * 21845 //120 degrees off
+ * 43690 //240 degrees off
+ * 
+ * */
+unsigned long int phase1_shift = 0;	//Start all at 0
+unsigned long int phase2_shift = 0;	
+unsigned long int phase3_shift = 0;	
+
 //Define Signal Generator
 #if PHASE_GEN_TYPE==LINEAR_INT
 SGENTI_1 sgen_1 = SGENTI_1_DEFAULTS;
@@ -421,12 +432,9 @@ void configureDAC(void)
 }
 inline void resetPhase(void)
 {
-    /*
-    phase = ((desired phase(radians) / 2pi) * 2^16)
-    */
-	sgen_1.alpha = 0; // Range(16) = 0x0000 -> 0xFFFF
-	sgen_2.alpha = 21845;	//120 degrees off
-	sgen_3.alpha = 43690;	//240 degrees off
+	sgen_1.alpha = phase1_shift; // Range(16) = 0x0000 -> 0xFFFF
+	sgen_2.alpha = phase2_shift;	
+	sgen_3.alpha = phase3_shift;	
 }
 //
 // configureWaveform - Configure the SINE waveform
@@ -564,6 +572,37 @@ inline void decodeMsg(void)
     msbs = rData[2];
     lsbs = rData[3];
     outputFreq_hz = ((msbs << 8) | lsbs);
+    
+    //determine channel phase actions
+    if(rData[4] & 0x02)
+    {
+		//Increase channel 1 offset by 10 degrees
+		phase1_shift += TEN_DEGREE_INCREMENT;
+	}
+	else if(rData[4] & 0x04){
+		//Decrease channel 1 phase by 10 degrees
+		phase1_shift -= TEN_DEGREE_INCREMENT;
+	}
+	
+	if(rData[4] & 0x08)
+    {
+		//Increase channel 2 offset by 10 degrees
+		phase1_shift += TEN_DEGREE_INCREMENT;
+	}
+	else if(rData[4] & 0x10){
+		//Decrease channel 2 phase by 10 degrees
+		phase1_shift -= TEN_DEGREE_INCREMENT;
+	}
+	
+	if(rData[4] & 0x20)
+    {
+		//Increase channel 3 offset by 10 degrees
+		phase1_shift += TEN_DEGREE_INCREMENT;
+	}
+	else if(rData[4] & 0x40){
+		//Decrease channel 3 phase by 10 degrees
+		phase1_shift -= TEN_DEGREE_INCREMENT;
+	}
     
     //determine gain
     temp = rData[5];

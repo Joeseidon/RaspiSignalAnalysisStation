@@ -61,6 +61,21 @@ class MyWindow(QtGui.QMainWindow):
 		self.channel_1_gain_value = 0.0
 		self.channel_2_gain_value = 0.0
 		self.channel_3_gain_value = 0.0
+		self.channel_1_phase_value = 0
+		self.channel_2_phase_value = 0
+		self.channel_3_phase_value = 0
+		#Holds encoded phase change
+		'''phaseData
+			BIT		:		Data
+			0		:		buf 
+			1		:	Channel 1 UP
+			2		:	Channel 1 DOWN
+			3		:	Channel	2 UP
+			4		:	Channel	2 DOWN
+			5		:	Channel	3 UP
+			6		:	Channel 3 DOWN
+			7		:		buf			'''
+		self.phaseData = 0x00
 		
 		#Create necessary local vars
 		self.update_freq = 1000 #time in msec for timer experation
@@ -98,6 +113,10 @@ class MyWindow(QtGui.QMainWindow):
 		self.FreqMult10.toggled.connect(lambda:self.setFreqStep(20))
 		self.FreqMult100.toggled.connect(lambda:self.setFreqStep(200))
 		self.FreqMult1000.toggled.connect(lambda:self.setFreqStep(2000))
+			#Connect Channel Phase Shift
+		self.Channel1_phase.valueChanged.connect(self.channelPhaseUpdate)
+		self.Channel2_phase.valueChanged.connect(self.channelPhaseUpdate)
+		self.Channel3_phase.valueChanged.connect(self.channelPhaseUpdate)
 		
 		#Create I2C comm
 		self.DEVICE_BUS = 1
@@ -118,6 +137,42 @@ class MyWindow(QtGui.QMainWindow):
 		self.phaseResetTimer.setInterval(self.phaseUpdateFreq)
 		self.phaseResetTimer.timeout.connect(self.phaseCorrect)
 		self.phaseResetTimer.setSingleShot(True)
+		
+	def channelPhaseUpdate(self):
+		'''phaseData
+			BIT		:		Data
+			0		:		buf 
+			1		:	Channel 1 UP
+			2		:	Channel 1 DOWN
+			3		:	Channel	2 UP
+			4		:	Channel	2 DOWN
+			5		:	Channel	3 UP
+			6		:	Channel 3 DOWN
+			7		:		buf			'''
+		
+		#reset phase data
+		self.phaseData = 0x00
+		#compare new and old data fro each channel 
+		if(self.channel_1_phase_value < self.Channel1_phase.value()):
+			self.phaseData = self.phaseData | 0x02
+		if(self.channel_1_phase_value > self.Channel1_phase.value()):
+			ThreePhaseSign = ThreePhaseSign | 0x04
+		if(self.channel_2_phase_value < self.Channel2_phase.value()):
+			self.phaseData = self.phaseData | 0x08
+		if(self.channel_2_phase_value > self.Channel2_phase.value()):
+			self.phaseData = self.phaseData | 0x10
+		if(self.channel_3_phase_value < self.Channel3_phase.value()):
+			self.phaseData = self.phaseData | 0x20
+		if(self.channel_3_phase_value > self.Channel3_phase.value()):
+			self.phaseData = self.phaseData | 0x40
+			
+		#update data
+		self.channel_1_phase_value = self.Channel1_phase.value()
+		self.channel_2_phase_value = self.Channel1_phase.value()
+		self.channel_3_phase_value = self.Channel1_phase.value()
+		
+		#set global update value
+		self.dataHasChanged = True
 		
 	def setFreqStep(self, mult):
 		self.freqStep = mult
@@ -158,6 +213,10 @@ class MyWindow(QtGui.QMainWindow):
 		self.Channel1_gain.setValue(0.0)
 		self.Channel2_gain.setValue(0.0)
 		self.Channel3_gain.setValue(0.0)
+		self.Channel1_phase.setValue(0)
+		self.Channel2_phase.setValue(0)
+		self.Channel3_phase.setValue(0)
+		self.phaseData = 0x00
 		self.op_code = 3
 		#set global update value
 		self.dataHasChanged = True
@@ -308,7 +367,7 @@ class MyWindow(QtGui.QMainWindow):
 			1		:	Buffer
 			2		:	Freq MSB
 			3		:	Freq LSB
-			4		:	Buffer
+			4		:	Phase Data
 			5		:	Gain
 			6		:	ThreePhaseSign
 			7		:	Offset
@@ -333,7 +392,11 @@ class MyWindow(QtGui.QMainWindow):
 		MSB,LSB = self.dataConversionForTransfer(freq)
 		msg.append(MSB)
 		msg.append(LSB)	
-		msg.append(bufferVal)
+		if debug:
+			print(msg)
+		
+		#Add Phase Data
+		msg.append(self.phaseData)
 		if debug:
 			print(msg)
 			
