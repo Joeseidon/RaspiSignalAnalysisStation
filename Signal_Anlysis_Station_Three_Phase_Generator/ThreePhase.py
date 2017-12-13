@@ -150,26 +150,32 @@ class MyWindow(QtGui.QMainWindow):
 			6		:	Channel 3 DOWN
 			7		:		buf			'''
 		
+		#print("Old Data: ", self.channel_1_phase_value, " ", self.channel_2_phase_value, " ", self.channel_3_phase_value)
+		#print("New Data: ", self.Channel1_phase.value(), " ",self.Channel2_phase.value(), " ", self.Channel3_phase.value())
 		#reset phase data
 		self.phaseData = 0x00
+
 		#compare new and old data fro each channel 
 		if(self.channel_1_phase_value < self.Channel1_phase.value()):
-			self.phaseData = self.phaseData | 0x02
+			self.phaseData = self.phaseData | 0x04
 		if(self.channel_1_phase_value > self.Channel1_phase.value()):
-			ThreePhaseSign = ThreePhaseSign | 0x04
+			self.phaseData = self.phaseData | 0x02
 		if(self.channel_2_phase_value < self.Channel2_phase.value()):
-			self.phaseData = self.phaseData | 0x08
-		if(self.channel_2_phase_value > self.Channel2_phase.value()):
 			self.phaseData = self.phaseData | 0x10
+		if(self.channel_2_phase_value > self.Channel2_phase.value()):
+			self.phaseData = self.phaseData | 0x08
 		if(self.channel_3_phase_value < self.Channel3_phase.value()):
-			self.phaseData = self.phaseData | 0x20
-		if(self.channel_3_phase_value > self.Channel3_phase.value()):
 			self.phaseData = self.phaseData | 0x40
+		if(self.channel_3_phase_value > self.Channel3_phase.value()):
+			self.phaseData = self.phaseData | 0x20
+			
 			
 		#update data
 		self.channel_1_phase_value = self.Channel1_phase.value()
-		self.channel_2_phase_value = self.Channel1_phase.value()
-		self.channel_3_phase_value = self.Channel1_phase.value()
+		self.channel_2_phase_value = self.Channel2_phase.value()
+		self.channel_3_phase_value = self.Channel3_phase.value()
+		
+		#print(hex(self.phaseData))
 		
 		#set global update value
 		self.dataHasChanged = True
@@ -216,7 +222,7 @@ class MyWindow(QtGui.QMainWindow):
 		self.Channel1_phase.setValue(0)
 		self.Channel2_phase.setValue(0)
 		self.Channel3_phase.setValue(0)
-		self.phaseData = 0x00
+		self.phaseData = 0x7E
 		self.op_code = 3
 		#set global update value
 		self.dataHasChanged = True
@@ -271,6 +277,8 @@ class MyWindow(QtGui.QMainWindow):
 		self.dataHasChanged = True
 	
 	def phaseCorrect(self):
+		#Reset phase data to clear phase changes on second send 
+		self.phaseData = 0x00
 		#Called from timerExperation after every data update 
 		#Will resend data to correct phase after 0.5sec
 
@@ -397,6 +405,7 @@ class MyWindow(QtGui.QMainWindow):
 		
 		#Add Phase Data
 		msg.append(self.phaseData)
+		print(hex(self.phaseData))
 		if debug:
 			print(msg)
 			

@@ -363,6 +363,9 @@
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="5" column="5" alignment="Qt::AlignHCenter">
            <widget class="QSpinBox" name="Channel3_phase">
+            <property name="prefix">
+             <string/>
+            </property>
             <property name="maximum">
              <number>360</number>
             </property>
